@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>SecureStart — Cyber Awareness MVP</title>
+<style>
+  :root{--accent:#0b78d1;--muted:#6b7280;--bg:#f7fafc}
+  body{font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:0;background:var(--bg);color:#0f1724}
+  .container{max-width:920px;margin:32px auto;padding:20px}
+  header{display:flex;gap:16px;align-items:center}
+  .logo{width:62px;height:62px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#06b6d4);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:18px}
+  h1{margin:0;font-size:1.4rem}
+  p.lead{color:var(--muted);margin:6px 0 18px}
+  .grid{display:grid;grid-template-columns:1fr 320px;gap:20px}
+  .card{background:white;border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(8,15,30,0.06)}
+  .module{display:flex;gap:12px;align-items:center}
+  .module-thumb{width:72px;height:72px;border-radius:8px;background:linear-gradient(180deg,#eef8ff,#dbeeff);display:flex;align-items:center;justify-content:center;font-weight:600;color:#07385b}
+  .btn{background:var(--accent);color:white;padding:10px 14px;border-radius:8px;border:0;cursor:pointer;font-weight:600}
+  .btn.ghost{background:transparent;color:var(--accent);border:2px solid rgba(11,120,209,0.12)}
+  .progress{height:10px;background:#e6eef9;border-radius:999px;overflow:hidden;margin-top:12px}
+  .progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#06b6d4);width:0%;}
+  .quiz{margin-top:14px}
+  .q{margin-bottom:12px}
+  .options{display:flex;flex-direction:column;gap:8px}
+  .opt{padding:10px;border-radius:8px;border:1px solid #e6eef9;background:#fbfdff;cursor:pointer}
+  .opt.correct{outline:3px solid rgba(6,182,212,0.18);border-color:#06b6d4}
+  .opt.wrong{outline:3px solid rgba(236,72,153,0.12);border-color:#fda4af}
+  .small{font-size:0.86rem;color:var(--muted)}
+  footer{margin-top:18px;display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:0.9rem}
+  @media(max-width:880px){.grid{grid-template-columns:1fr}.container{padding:12px}}
+</style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">SS</div>
+      <div>
+        <h1>SecureStart — Quick Cyber Awareness</h1>
+        <p class="lead">3-minute lesson • 3-question quiz • practice phish reporting</p>
+      </div>
+    </header>
+
+    <div class="grid" style="margin-top:18px">
+      <main>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <h2 style="margin:0 0 6px">Module 1 — Recognizing Phishing</h2>
+              <div class="small">Objective: Spot suspicious email cues</div>
+            </div>
+            <div>
+              <button class="btn" id="startLessonBtn">Start Lesson</button>
+            </div>
+          </div>
+
+          <div style="margin-top:14px">
+            <div class="module">
+              <div class="module-thumb">PH</div>
+              <div>
+                <div style="font-weight:700">Why phishing works</div>
+                <div class="small" style="margin-top:6px">Short walkthrough, examples, and actionable tips.</div>
+              </div>
+            </div>
+
+            <div class="progress" aria-hidden="true" title="Progress">
+              <i id="progressBar" style="width:0%"></i>
+            </div>
+
+            <div id="statusText" style="margin-top:10px" class="small">Not started</div>
+          </div>
+
+          <div class="quiz" id="quizArea" hidden>
+            <hr style="border:none;border-top:1px solid #f1f5f9;margin:14px 0">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-weight:700">Quick Quiz</div>
+              <div class="small" id="quizScore">Score: 0/3</div>
+            </div>
+
+            <div id="q1" class="q" data-answered="false">
+              <div class="small" style="font-weight:600">1) Which email cue is the strongest red flag?</div>
+              <div class="options">
+                <button class="opt" data-correct="false">Email from colleague with signature</button>
+                <button class="opt" data-correct="true">Urgent request to transfer money</button>
+                <button class="opt" data-correct="false">Company newsletter</button>
+              </div>
+            </div>
+
+            <div id="q2" class="q" data-answered="false">
+              <div class="small" style="font-weight:600">2) You should click a link if:</div>
+              <div class="options">
+                <button class="opt" data-correct="false">It looks like an invoice</button>
+                <button class="opt" data-correct="false">It uses shortened URL only</button>
+                <button class="opt" data-correct="true">Sender verified via company directory</button>
+              </div>
+            </div>
+
+            <div id="q3" class="q" data-answered="false">
+              <div class="small" style="font-weight:600">3) Best immediate action if you suspect a phish?</div>
+              <div class="options">
+                <button class="opt" data-correct="true">Report it using 'Report Phish'</button>
+                <button class="opt" data-correct="false">Reply asking for proof</button>
+                <button class="opt" data-correct="false">Forward to everyone</button>
+              </div>
+            </div>
+
+            <div style="margin-top:12px;display:flex;gap:8px">
+              <button class="btn" id="finishBtn">Finish Module</button>
+              <button class="btn ghost" id="restartBtn">Reset Progress</button>
+            </div>
+          </div>
+
+        </div>
+
+        <div style="margin-top:12px" class="small">Tip: use this demo in your pitch to show how we reduce phish-clicks by targeted microlearning.</div>
+      </main>
+
+      <aside>
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="width:54px;height:54px;border-radius:10px;background:#eefbfd;display:flex;align-items:center;justify-content:center;color:#0369a1;font-weight:700">U</div>
+            <div>
+              <div style="font-weight:700">Your Learner</div>
+              <div class="small">Role: Employee • Team: Sales</div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px">
+            <div style="font-weight:700">Progress</div>
+            <div class="small" id="sideProgress">0 of 1 modules</div>
+          </div>
+
+          <div style="margin-top:12px">
+            <button class="btn" id="reportBtn">Report Phish</button>
+            <div class="small" style="margin-top:8px">Use to mark suspicious emails. Counts as safe behavior.</div>
+          </div>
+
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <div style="font-weight:700">Certificate</div>
+          <div class="small" id="certArea" style="margin-top:8px">Complete module to earn certificate</div>
+        </div>
+      </aside>
+    </div>
+
+    <footer>
+      <div>Demo • SecureStart</div>
+      <div>Local demo — data stored locally</div>
+    </footer>
+  </div>
+
+<script>
+(function(){
+  const startLessonBtn = document.getElementById('startLessonBtn');
+  const quizArea = document.getElementById('quizArea');
+  const progressBar = document.getElementById('progressBar');
+  const statusText = document.getElementById('statusText');
+  const sideProgress = document.getElementById('sideProgress');
+  const quizScore = document.getElementById('quizScore');
+  const finishBtn = document.getElementById('finishBtn');
+  const restartBtn = document.getElementById('restartBtn');
+  const reportBtn = document.getElementById('reportBtn');
+  const certArea = document.getElementById('certArea');
+
+  const STORAGE_KEY = 'securestart:v1';
+
+  // initial state
+  let state = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  if(!state.modules) state.modules = {m1:{completed:false,score:0}};
+  updateUI();
+
+  startLessonBtn.addEventListener('click', ()=> {
+    // show a micro-lesson as an alert-like modal (kept simple)
+    const lesson = `Phishing micro-lesson (2 min):
+1) Urgency + requests for money or credentials = red flag.
+2) Check sender's email; hover to preview links.
+3) When in doubt, report using 'Report Phish'.\n\n(Click OK to open quiz.)`;
+    alert(lesson);
+    quizArea.hidden = false;
+    statusText.textContent = 'In progress — take the quiz';
+    // scroll quiz into view
+    document.getElementById('q1').scrollIntoView({behavior:'smooth'});
+  });
+
+  // attach click handlers to options
+  document.querySelectorAll('.opt').forEach(btn=>{
+    btn.addEventListener('click', ()=> {
+      const parentQ = btn.closest('.q');
+      if(parentQ.dataset.answered === 'true') return; // single attempt
+      const correct = btn.dataset.correct === 'true';
+      parentQ.dataset.answered = 'true';
+      if(correct){
+        btn.classList.add('correct');
+      } else {
+        btn.classList.add('wrong');
+        // reveal correct option
+        const opts = parentQ.querySelectorAll('.opt');
+        opts.forEach(o => { if(o.dataset.correct === 'true') o.classList.add('correct'); });
+      }
+      // update score
+      updateScore();
+    });
+  });
+
+  function updateScore(){
+    const qs = document.querySelectorAll('.q');
+    let score = 0;
+    qs.forEach(q=>{
+      const answered = q.dataset.answered === 'true';
+      if(answered){
+        const correctOpt = q.querySelector('.opt.correct');
+        if(correctOpt) score++;
+      }
+    });
+    quizScore.textContent = `Score: ${score}/3`;
+    state.modules.m1.score = score;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  finishBtn.addEventListener('click', ()=>{
+    // require that all questions are attempted; if not, warn
+    const unanswered = [...document.querySelectorAll('.q')].some(q=> q.dataset.answered!=='true');
+    if(unanswered){
+      if(!confirm('Some questions are unanswered. Submit anyway?')) return;
+    }
+    // mark module complete if score>=2
+    if(state.modules.m1.score >= 2){
+      state.modules.m1.completed = true;
+      alert('Well done — module complete! Certificate issued.');
+      certArea.textContent = 'Certificate: Module 1 — Recognizing Phishing (demo)';
+    } else {
+      alert('You scored below threshold. Recommend re-reading the lesson.');
+    }
+    // update progress visuals
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    updateUI();
+  });
+
+  restartBtn.addEventListener('click', ()=> {
+    if(!confirm('Reset progress for demo?')) return;
+    state = {modules:{m1:{completed:false,score:0}}};
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    // reset UI
+    document.querySelectorAll('.q').forEach(q=>{
+      q.dataset.answered = 'false';
+      q.querySelectorAll('.opt').forEach(o=> o.className='opt');
+    });
+    quizScore.textContent = 'Score: 0/3';
+    certArea.textContent = 'Complete module to earn certificate';
+    updateUI();
+  });
+
+  reportBtn.addEventListener('click', ()=> {
+    // simulate reporting phish: store event and show thanks
+    const events = JSON.parse(localStorage.getItem(STORAGE_KEY+'_events') || '[]');
+    events.push({type:'report_phish',ts:new Date().toISOString()});
+    localStorage.setItem(STORAGE_KEY+'_events', JSON.stringify(events));
+    alert('Thanks — the email has been reported. Good security behavior!');
+    // small visual reward
+    reportBtn.textContent = 'Reported ✓';
+    setTimeout(()=> reportBtn.textContent = 'Report Phish', 1800);
+  });
+
+  function updateUI(){
+    const completed = state.modules.m1.completed;
+    const score = state.modules.m1.score || 0;
+    progressBar.style.width = completed ? '100%' : (score/3*100)+'%';
+    statusText.textContent = completed ? 'Completed' : (score>0 ? `In progress — score ${score}/3` : 'Not started');
+    sideProgress.textContent = (completed? '1 of 1 modules' : '0 of 1 modules');
+  }
+
+})();
+</script>
+</body>
+</html>
